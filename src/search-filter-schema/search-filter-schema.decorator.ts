@@ -29,19 +29,19 @@ export function filterSchema(filters: string | string[] | ParsedQs | ParsedQs[],
     for (const key of Object.keys(filters)) {
       const data = filters[key]
       switch (key) {
-        case '$and':
-          console.log('$and')
-          internalFilterbyType(key, data)
-          break
-
         case '$or':
-          console.log('$or')
-          internalFilterbyType(key, data, DEFAULT_ALLOWED_FILTERS, options)
+        case '$and': {
+          for (const k of key) {
+            const d = filters[key][k]
+            conditions = merge(conditions, internalFilterbyType(k, d, DEFAULT_ALLOWED_FILTERS, options))
+          }
           break
+        }
 
-        default:
+        default: {
           conditions = merge(conditions, internalFilterbyType(key, data, DEFAULT_ALLOWED_FILTERS, options))
           break
+        }
       }
     }
     return conditions
