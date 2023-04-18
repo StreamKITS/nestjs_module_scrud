@@ -1,6 +1,6 @@
 import { NotAcceptableException, NotFoundException } from '@nestjs/common'
 import { Document, FilterQuery, Model, ModifyResult, ProjectionType, Query, QueryOptions, SaveOptions, Types, UpdateQuery } from 'mongoose'
-import { ServiceSchemaInterface } from '../interfaces/service.schema.interface'
+import { ServiceSchemaInterface } from './service.schema.interface'
 import { AbstractSchema } from './abstract.schema'
 import { AbstractService, AbstractServiceContext } from './abstract.service'
 

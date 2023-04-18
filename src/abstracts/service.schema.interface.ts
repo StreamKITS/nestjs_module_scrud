@@ -1,5 +1,5 @@
 import { Document, FilterQuery, ModifyResult, ProjectionType, Query, QueryOptions, SaveOptions, Types, UpdateQuery } from 'mongoose'
-import { AbstractSchema } from '../../src/abstracts/abstract.schema'
+import { AbstractSchema } from './abstract.schema'
 
 export interface ServiceSchemaInterface {
   find<T extends AbstractSchema>(
