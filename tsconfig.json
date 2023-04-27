@@ -2,18 +2,21 @@
   "compilerOptions": {
     "module": "commonjs",
     "types": ["node", "jest"],
+    "lib": ["es7"],
     "declaration": true,
-    "removeComments": false,
+    "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es6",
-    "sourceMap": false,
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "baseUrl": "./",
+    "target": "es2017",
+    "sourceMap": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "baseUrl": ".",
     "noLib": false,
+    "incremental": true,
+    "moduleResolution": "node",
     "esModuleInterop": true
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules"]
 }

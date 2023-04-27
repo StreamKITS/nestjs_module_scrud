@@ -1,22 +1,26 @@
-// import { DynamicModule, Module } from '@nestjs/common'
-// import { ScrudCoreModule } from './scrud.core-module'
-// import { ScrudModuleAsyncOptions, ScrudModuleOptions } from './scrud.interfaces'
+import { DynamicModule, Module } from '@nestjs/common'
+import { APP_FILTER } from '@nestjs/core'
+import { HttpExceptionFilter } from './all-exceptions'
+import { ScrudModuleOptions } from './scrud.interfaces'
+import { NotFoundExceptionFilter } from './all-exceptions/notfound-exception.filter'
 
-// @Module({})
-// export class ScrudModule {
-//   public static forRoot(options: ScrudModuleOptions, connection?: string): DynamicModule {
-//     return {
-//       module: ScrudModule,
-//       imports: [ScrudCoreModule.forRoot(options, connection)],
-//       exports: [ScrudCoreModule],
-//     }
-//   }
-
-//   public static forRootAsync(options: ScrudModuleAsyncOptions, connection?: string): DynamicModule {
-//     return {
-//       module: ScrudModule,
-//       imports: [ScrudCoreModule.forRootAsync(options, connection)],
-//       exports: [ScrudCoreModule],
-//     }
-//   }
-// }
+@Module({})
+export class ScrudModule {
+  public static forRoot(options: ScrudModuleOptions, connection?: string): DynamicModule {
+    const providers = []
+    if (options.disableHttpExceptionFilter !== true) {
+      providers.push({
+        provide: APP_FILTER,
+        useClass: HttpExceptionFilter,
+      })
+      providers.push({
+        provide: APP_FILTER,
+        useClass: NotFoundExceptionFilter,
+      })
+    }
+    return {
+      module: this,
+      providers,
+    }
+  }
+}

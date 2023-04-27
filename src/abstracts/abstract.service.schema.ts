@@ -1,8 +1,8 @@
-import { NotAcceptableException, NotFoundException } from '@nestjs/common'
 import { Document, FilterQuery, Model, ModifyResult, ProjectionType, Query, QueryOptions, SaveOptions, Types, UpdateQuery } from 'mongoose'
-import { ServiceSchemaInterface } from './service.schema.interface'
 import { AbstractSchema } from './abstract.schema'
 import { AbstractService, AbstractServiceContext } from './abstract.service'
+import { ServiceSchemaInterface } from './service.schema.interface'
+import { NotFound } from './scrud.interface'
 
 export abstract class AbstractServiceSchema extends AbstractService implements ServiceSchemaInterface {
   protected abstract _model: Model<AbstractSchema | any>
@@ -47,9 +47,8 @@ export abstract class AbstractServiceSchema extends AbstractService implements S
   ): Promise<Query<any, any, any, any>> {
     //TODO fix this
     this.logger.debug(['findById', JSON.stringify(Object.values(arguments))].join(' '))
-    if (!Types.ObjectId.isValid(_id)) throw new NotAcceptableException('Invalid ObjectId')
     const data = await this._model.findById<Query<T | null, T, any, T>>(_id, projection, options).exec()
-    if (!data) throw new NotFoundException('Not found')
+    if (!data) throw new NotFound()
     return data
   }
 
@@ -60,7 +59,7 @@ export abstract class AbstractServiceSchema extends AbstractService implements S
   ): Promise<Query<T, T, any, T>> {
     this.logger.debug(['findOne', JSON.stringify(Object.values(arguments))].join(' '))
     const data = await this._model.findOne<Query<T | null, T, any, T>>(filter, projection, options).exec()
-    if (!data) throw new NotFoundException('Not found')
+    if (!data) throw new NotFound()
     return data
   }
 
@@ -83,7 +82,7 @@ export abstract class AbstractServiceSchema extends AbstractService implements S
         ...options,
       })
       .exec()
-    if (!document) throw new NotFoundException('Not found')
+    if (!document) throw new NotFound()
     return document
   }
 
@@ -93,7 +92,7 @@ export abstract class AbstractServiceSchema extends AbstractService implements S
   ): Promise<Query<T, T, any, T>> {
     this.logger.debug(['delete', JSON.stringify(Object.values(arguments))].join(' '))
     const document = await this._model.findByIdAndDelete<Query<T | null, T, any, T>>({ _id }, options).exec()
-    if (!document) throw new NotFoundException('Not found')
+    if (!document) throw new NotFound()
     return document
   }
 }
