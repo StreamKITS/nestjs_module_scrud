@@ -1,6 +1,6 @@
 {
   "name": "@streamkits/nestjs_module_scrud",
-  "version": "0.0.8",
+  "version": "0.0.11",
   "description": "SCRUD module for NestJS Framework",
   "repository": "https://github.com/StreamKITS/nestjs_module_scrud.git",
   "author": "Tacx <12997062+tacxou@users.noreply.github.com>",
