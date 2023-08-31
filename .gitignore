@@ -1,6 +1,7 @@
 node_modules/
 coverage/
 dist/
+.idea/
 
 yarn-debug.log*
 yarn-error.log*
