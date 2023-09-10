@@ -7,6 +7,7 @@ export const DEFAULT_SEARCH_OPTIONS = {
   limitKey: 'limit',
   skipKey: 'skip',
   pageKey: 'page',
+  sortKey: 'sort',
 }
 
 export interface FilterSearchOptions {
@@ -15,14 +16,21 @@ export interface FilterSearchOptions {
   limitKey?: string
   skipKey?: string
   pageKey?: string
+  sortKey?: string
+}
+
+export interface SortOptions {
+  [key: string]: 'asc' | 'desc' | 1 | -1
 }
 
 export interface FilterOptions {
   limit: number
   skip: number
+  sort: SortOptions
 }
 
 /* istanbul ignore next */
+// noinspection JSUnusedGlobalSymbols
 export const SearchFilterOptions = createParamDecorator((options: FilterSearchOptions, ctx: ExecutionContext): FilterOptions => {
   options = { ...DEFAULT_SEARCH_OPTIONS, ...options }
   const req = ctx.switchToHttp().getRequest<Request>()
@@ -32,8 +40,23 @@ export const SearchFilterOptions = createParamDecorator((options: FilterSearchOp
     if (skip > 0) Logger.debug(`Both ${options.skipKey} and ${options.pageKey} are set. ${options.skipKey} will be ignored`, options.loggerType)
     skip = (parseInt(req.query[options.pageKey], 10) - 1) * limit
   }
+  const sort = {}
+  for (const key in req.query[options.sortKey]) {
+    switch (`${req.query[options.sortKey][key]}`.toLowerCase()) {
+      case '1':
+      case 'asc':
+        sort[key] = 1
+        break
+
+      case '-1':
+      case 'desc':
+        sort[key] = -1
+        break
+    }
+  }
   return {
     limit,
     skip,
+    sort,
   }
 })

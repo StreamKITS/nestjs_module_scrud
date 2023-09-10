@@ -79,10 +79,10 @@ describe('Test', () => {
 
   it('test in bad string filter', () => {
     expect(
-      filterSchema({
+      () => filterSchema({
         '@patterns': 'wrong array',
       }),
-    ).toStrictEqual({})
+    ).toThrow(Error)
   })
 
   it('test in int filter', () => {
@@ -95,10 +95,10 @@ describe('Test', () => {
 
   it('test in bad string filter', () => {
     expect(
-      filterSchema({
+      () => filterSchema({
         '@#age': 'wrong array',
       }),
-    ).toStrictEqual({})
+    ).toThrow(Error)
   })
 
   it('test not in string filter', () => {
@@ -111,10 +111,10 @@ describe('Test', () => {
 
   it('test not in string bad filter', () => {
     expect(
-      filterSchema({
+      () => filterSchema({
         '!@patterns': 'bad array',
       }),
-    ).toStrictEqual({})
+    ).toThrow(Error)
   })
 
   it('test not in int filter', () => {
@@ -127,42 +127,42 @@ describe('Test', () => {
 
   it('test invalid in', () => {
     expect(
-      filterSchema({
+      () => filterSchema({
         '@#age': ['not a number'],
       }),
-    ).toStrictEqual({})
+    ).toThrow(Error)
   })
 
   it('test invalid not in', () => {
     expect(
-      filterSchema({
+      () => filterSchema({
         '!@#age': ['not a number'],
       }),
-    ).toStrictEqual({})
+    ).toThrow(Error)
   })
 
   it('test invalid string', () => {
     expect(
-      filterSchema({
+      () => filterSchema({
         '=patterns': ['array in', 'string type'],
       }),
-    ).toStrictEqual({})
+    ).toThrow(Error)
   })
 
   it('test invalid int', () => {
     expect(
-      filterSchema({
+      () => filterSchema({
         '#patterns': 'not a number',
       }),
-    ).toStrictEqual({})
+    ).toThrow(Error)
   })
 
   it('test invalid regex', () => {
     expect(
-      filterSchema({
+      () => filterSchema({
         '^patterns': 'test|not-test',
       }),
-    ).toStrictEqual({})
+    ).toThrow(Error)
   })
 
   it('test valid regex', () => {
@@ -271,10 +271,10 @@ describe('Test', () => {
 
   it('unsafe filtered', () => {
     expect(
-      filterSchema({
+      () => filterSchema({
         patterns: ['test', 'test2'],
       }),
-    ).toStrictEqual({})
+    ).toThrow(Error)
   })
 
   it('unsafe unfiltered', () => {
@@ -290,12 +290,12 @@ describe('Test', () => {
 
   it('change with default options', () => {
     expect(
-      filterSchema(
+      () => filterSchema(
         {
           patterns: ['test', 'test2'],
         },
         { unsafe: true, ...DEFAULT_SCHEMA_OPTIONS },
       ),
-    ).toStrictEqual({})
+    ).toThrow(Error)
   })
 })
