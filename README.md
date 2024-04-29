@@ -43,7 +43,7 @@ curl --request GET \
 #### List
 | Filter | Description           |
 |--------|-----------------------|
-| =      | Equal                 |
+| %      | Equal                 |
 | #      | Number Equal          |
 | !#     | Number Not Equal      |
 | !=     | Not Equal             |

@@ -2,14 +2,17 @@ import { BadRequestException, ExecutionContext, Logger, createParamDecorator } f
 import dayjs from 'dayjs'
 import merge from 'deepmerge'
 import { Request } from 'express'
+import { Types } from 'mongoose'
 import { ParsedQs } from 'qs'
+import { isPlainObject } from 'is-plain-object'
 
-export const DEFAULT_ALLOWED_FILTERS = ['=', '?', '#', '!', '>', '<', '^', '@']
+export const DEFAULT_ALLOWED_FILTERS = ['%', '?', '#', '!', '>', '<', '^', '@']
 export const DEFAULT_SCHEMA_OPTIONS = {
   loggerType: 'FilterSchemaControl',
   unsafe: false,
   queryKey: 'filters',
   strict: true,
+  convertObjectId: true,
 }
 
 export interface FilterSchemaOptions {
@@ -18,6 +21,7 @@ export interface FilterSchemaOptions {
   unsafe?: boolean
   queryKey?: string
   strict?: boolean
+  convertObjectId?: boolean
 }
 
 export interface FilterSchema {
@@ -29,7 +33,7 @@ export const SearchFilterSchema = createParamDecorator((options: FilterSchemaOpt
   options = { ...DEFAULT_SCHEMA_OPTIONS, ...options }
   const req = ctx.switchToHttp().getRequest<Request>()
   try {
-  return filterSchema(req.query[options.queryKey], options)
+    return filterSchema(req.query[options.queryKey], options)
   } catch (error) {
     throw new BadRequestException(error.message)
   }
@@ -55,7 +59,9 @@ export function filterSchema(
         }
 
         default: {
-          conditions = merge(conditions, internalFilterbyType(key, data, DEFAULT_ALLOWED_FILTERS, options))
+          conditions = merge(conditions, internalFilterbyType(key, data, DEFAULT_ALLOWED_FILTERS, options), {
+            isMergeableObject: isPlainObject,
+          })
           break
         }
       }
@@ -152,13 +158,14 @@ function internalFilterbyType(
       break
     }
 
-    case '=': {
+    case '%': {
       if (Array.isArray(data)) {
         if (options.strict) throw new Error(`Invalid filter key ${keyCheck} with strict array: ${JSON.stringify(data)}`)
         Logger.verbose(`Invalid filter key ${keyCheck} with strict string: ${JSON.stringify(data)}`, options.loggerType)
         break
       }
-      parsed[key.slice(1)] = `${data}`
+      parsed[key.slice(1)] = options.convertObjectId && Types.ObjectId.isValid(data) ? new Types.ObjectId(data) : `${data}`
+      console.log('parsed[key.slice(1)]', parsed[key.slice(1)])
       break
     }
 

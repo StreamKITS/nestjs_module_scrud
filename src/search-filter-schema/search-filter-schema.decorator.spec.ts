@@ -1,3 +1,4 @@
+import { Types } from 'mongoose'
 import { DEFAULT_SCHEMA_OPTIONS, filterSchema } from './search-filter-schema.decorator'
 
 describe('Test', () => {
@@ -11,6 +12,14 @@ describe('Test', () => {
         patterns: 'game',
       }),
     ).toStrictEqual({ patterns: 'game' })
+  })
+
+  it('test objectId filter', () => {
+    expect(
+      filterSchema({
+        '%concernedTo': '65fab2d6946a5ede152f2689',
+      }),
+    ).toEqual({ concernedTo: new Types.ObjectId('65fab2d6946a5ede152f2689') })
   })
 
   it('test boolean filter with boolean string', () => {
@@ -144,7 +153,7 @@ describe('Test', () => {
   it('test invalid string', () => {
     expect(
       () => filterSchema({
-        '=patterns': ['array in', 'string type'],
+        '%patterns': ['array in', 'string type'],
       }),
     ).toThrow(Error)
   })
