@@ -165,7 +165,7 @@ function internalFilterbyType(
         break
       }
       parsed[key.slice(1)] = options.convertObjectId && Types.ObjectId.isValid(data) ? new Types.ObjectId(data) : `${data}`
-      console.log('parsed[key.slice(1)]', parsed[key.slice(1)])
+      // console.log('parsed[key.slice(1)]', parsed[key.slice(1)])
       break
     }
 
