@@ -17,9 +17,41 @@ describe('Test', () => {
   it('test objectId filter', () => {
     expect(
       filterSchema({
-        '%concernedTo': '65fab2d6946a5ede152f2689',
+        ':concernedTo': '65fab2d6946a5ede152f2689',
       }),
     ).toEqual({ concernedTo: new Types.ObjectId('65fab2d6946a5ede152f2689') })
+  })
+
+  it('test objectId ne filter', () => {
+    expect(
+      filterSchema({
+        '!:concernedTo': '65fab2d6946a5ede152f2689',
+      }),
+    ).toEqual({
+      concernedTo: {
+        $ne: new Types.ObjectId('65fab2d6946a5ede152f2689'),
+      }
+    })
+  })
+
+  it('test equal filter', () => {
+    expect(
+      filterSchema({
+        ':concernedTo': 'toto',
+      }),
+    ).toEqual({ concernedTo: 'toto' })
+  })
+
+  it('test equal ne filter', () => {
+    expect(
+      filterSchema({
+        '!:concernedTo': 'toto',
+      }),
+    ).toEqual({
+      concernedTo: {
+        $ne: 'toto',
+      }
+    })
   })
 
   it('test boolean filter with boolean string', () => {
@@ -153,7 +185,7 @@ describe('Test', () => {
   it('test invalid string', () => {
     expect(
       () => filterSchema({
-        '%patterns': ['array in', 'string type'],
+        ':patterns': ['array in', 'string type'],
       }),
     ).toThrow(Error)
   })
@@ -214,10 +246,10 @@ describe('Test', () => {
     ).toStrictEqual({ age: { $gt: new Date('2023-01-01T00:00') } })
   })
 
-  it('test date >=', () => {
+  it('test date >|', () => {
     expect(
       filterSchema({
-        '>=age': '2023-01-01T00:00',
+        '>|age': '2023-01-01T00:00',
       }),
     ).toStrictEqual({ age: { $gte: new Date('2023-01-01T00:00') } })
   })
@@ -230,10 +262,10 @@ describe('Test', () => {
     ).toStrictEqual({ age: { $lt: new Date('2023-01-01T00:00') } })
   })
 
-  it('test date <=', () => {
+  it('test date <|', () => {
     expect(
       filterSchema({
-        '<=age': '2023-01-01T00:00',
+        '<|age': '2023-01-01T00:00',
       }),
     ).toStrictEqual({ age: { $lte: new Date('2023-01-01T00:00') } })
   })
@@ -246,10 +278,10 @@ describe('Test', () => {
     ).toStrictEqual({ type: { $gt: 18 } })
   })
 
-  it('test int >=', () => {
+  it('test int >|', () => {
     expect(
       filterSchema({
-        '>=#type': '18',
+        '>|#type': '18',
       }),
     ).toStrictEqual({ type: { $gte: 18 } })
   })
@@ -262,10 +294,10 @@ describe('Test', () => {
     ).toStrictEqual({ type: { $lt: 18 } })
   })
 
-  it('test int <=', () => {
+  it('test int <|', () => {
     expect(
       filterSchema({
-        '<=#type': '18',
+        '<|#type': '18',
       }),
     ).toStrictEqual({ type: { $lte: 18 } })
   })
@@ -273,7 +305,7 @@ describe('Test', () => {
   it('bad key', () => {
     expect(
       filterSchema({
-        '<=#': '18',
+        '<|#': '18',
       }),
     ).toStrictEqual({})
   })

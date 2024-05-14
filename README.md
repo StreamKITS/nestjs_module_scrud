@@ -43,14 +43,14 @@ curl --request GET \
 #### List
 | Filter | Description           |
 |--------|-----------------------|
-| %      | Equal                 |
+| :      | Equal                 |
 | #      | Number Equal          |
 | !#     | Number Not Equal      |
-| !=     | Not Equal             |
+| !:     | Not Equal             |
 | \>     | Greater Than          |
-| \>=    | Greater Than or Equal |
+| \>|    | Greater Than or Equal |
 | \<     | Less Than             |
-| \<=    | Less Than or Equal    |
+| \<|    | Less Than or Equal    |
 | @      | in                    |
 | !@     | not in                |
 | @#     | number in             |

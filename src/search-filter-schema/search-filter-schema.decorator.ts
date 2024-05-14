@@ -6,7 +6,7 @@ import { Types } from 'mongoose'
 import { ParsedQs } from 'qs'
 import { isPlainObject } from 'is-plain-object'
 
-export const DEFAULT_ALLOWED_FILTERS = ['%', '?', '#', '!', '>', '<', '^', '@']
+export const DEFAULT_ALLOWED_FILTERS = [':', '?', '#', '!', '>', '<', '^', '@']
 export const DEFAULT_SCHEMA_OPTIONS = {
   loggerType: 'FilterSchemaControl',
   unsafe: false,
@@ -97,7 +97,7 @@ function internalFilterbyType(
     }
 
     case '!': {
-      const valueExclamation = internalFilterbyType(key.slice(1), data, ['#', '@'])
+      const valueExclamation = internalFilterbyType(key.slice(1), data, ['#', '@', ':'])
       if (Object.keys(valueExclamation).length === 0) break
       const typeExclamation = Object.keys(valueExclamation[keyCheck])[0]
       if (typeExclamation === '$in') {
@@ -111,7 +111,7 @@ function internalFilterbyType(
     case '<':
     case '>': {
       let upperLowerType = key[0] === '>' ? '$gt' : '$lt'
-      if (key[1] === '=') upperLowerType = `${upperLowerType}e`
+      if (key[1] === '|') upperLowerType = `${upperLowerType}e`
       const upperLowerKey = key.slice(upperLowerType.length - 2)
       const valueGreater = internalFiltersByTypeUpperLower(upperLowerType, upperLowerKey, data, options)
       if (Object.keys(valueGreater).length === 0) break
@@ -158,7 +158,7 @@ function internalFilterbyType(
       break
     }
 
-    case '%': {
+    case ':': {
       if (Array.isArray(data)) {
         if (options.strict) throw new Error(`Invalid filter key ${keyCheck} with strict array: ${JSON.stringify(data)}`)
         Logger.verbose(`Invalid filter key ${keyCheck} with strict string: ${JSON.stringify(data)}`, options.loggerType)
